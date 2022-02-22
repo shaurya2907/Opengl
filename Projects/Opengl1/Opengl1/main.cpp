@@ -1,12 +1,29 @@
 #include<stdio.h>
 #include<string.h>
+#include<cmath>
+
 #include<GL/glew.h>
 #include<GLFW/glfw3.h>
 
+
+#include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
+
 //Window Dimensions
 const GLint WIDTH = 800, HEIGHT = 600;
+const float toRadians = 3.12159265f / 180.0f;
 
-GLuint VAO, VBO, shader;
+GLuint VAO, VBO, shader, uniformModel;
+
+bool direction = true;
+float triOffset = 0.0f;
+float trimaxoffset = 0.7f;
+float triIncrement = 0.0005f;
+
+float curAngle = 0.0f;
+
+
 
 // Vertex Shader
 
@@ -15,9 +32,11 @@ static const char* vShader = "				\n\
                                               \n\
 layout(location = 0) in vec3 pos;              \n\
                                                 \n\
+ uniform mat4 model;                                                 \n\
+                                                 \n\
 void main()                                      \n\
 {                                                 \n\
-	gl_Position = vec4(0.4 * pos.x, 0.4 * pos.y, pos.z, 1.0);   \n\
+	gl_Position = model*vec4( pos, 1.0);   \n\
  }";
 
 // Fragment Shader
@@ -101,23 +120,29 @@ void CompileShaders()
 	GLint result = 0;
 	GLchar eLog[1024] = { 0 };
 
-	glLinkProgram(shader);
-	glGetProgramiv(shader, GL_LINK_STATUS, &result);
-	if (!result) {
+glLinkProgram(shader);
+glGetProgramiv(shader, GL_LINK_STATUS, &result);
+if (!result) {
 
-		glGetProgramInfoLog(shader, sizeof(eLog), NULL, eLog);
-		printf("Error linking program:  '%s' \n", eLog);
-			return;
-	}
+	glGetProgramInfoLog(shader, sizeof(eLog), NULL, eLog);
+	printf("Error linking program:  '%s' \n", eLog);
+	return;
+}
 
-	glValidateProgram(shader);
-	glGetProgramiv(shader, GL_VALIDATE_STATUS, &result);
-	if (!result) {
+glValidateProgram(shader);
+glGetProgramiv(shader, GL_VALIDATE_STATUS, &result);
+if (!result) {
 
-		glGetProgramInfoLog(shader, sizeof(eLog), NULL, eLog);
-		printf("Error validating profram:  '%s' \n", eLog);
-		return;
-	}
+	glGetProgramInfoLog(shader, sizeof(eLog), NULL, eLog);
+	printf("Error validating profram:  '%s' \n", eLog);
+	return;
+}
+
+
+uniformModel = glGetUniformLocation(shader, "model");
+
+
+
 }
 
 
@@ -142,7 +167,7 @@ int main()
 	//Allow forward comatibility
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	GLFWwindow *mainWindow = glfwCreateWindow(WIDTH, HEIGHT, "Test WINDOW", NULL, NULL);
+	GLFWwindow* mainWindow = glfwCreateWindow(WIDTH, HEIGHT, "Test WINDOW", NULL, NULL);
 	if (!mainWindow)
 	{
 		printf("GLFW wndow creation failed");
@@ -150,39 +175,59 @@ int main()
 		return 1;
 	}
 
-		//get Buffer size information
-		int bufferWidth, bufferHeight;
-		glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
+	//get Buffer size information
+	int bufferWidth, bufferHeight;
+	glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
 
-		// set context for GLEW to use
-		glfwMakeContextCurrent(mainWindow);
+	// set context for GLEW to use
+	glfwMakeContextCurrent(mainWindow);
 
-		//Allow modern extension features
-		glewExperimental = GL_TRUE;
+	//Allow modern extension features
+	glewExperimental = GL_TRUE;
 
-		if (glewInit() != GLEW_OK)
+	if (glewInit() != GLEW_OK)
+	{
+		printf("GLEW Initialization failed!");
+		glfwDestroyWindow(mainWindow);
+		glfwTerminate();
+		return 1;
+	}
+
+	//Setup Viewport size
+	glViewport(0, 0, bufferWidth, bufferHeight);
+
+	CreateTriangle();
+	CompileShaders();
+
+
+
+	// Loop until window closed
+	while (!glfwWindowShouldClose(mainWindow))
+	{
+
+		//Gwt+Handle user input event
+
+		glfwPollEvents();
+
+		if (direction)
 		{
-			printf("GLEW Initialization failed!");
-			glfwDestroyWindow(mainWindow);
-			glfwTerminate();
-			return 1;
+			triOffset += triIncrement;
+
+		}
+		else {
+			triOffset -= triIncrement;
 		}
 
-		//Setup Viewport size
-		glViewport(0, 0, bufferWidth, bufferHeight);
-
-		CreateTriangle();
-		CompileShaders();
-
-		
-
-		// Loop until window closed
-		while (!glfwWindowShouldClose(mainWindow))
+		if (abs(triOffset) >= trimaxoffset)
+			{
+			direction = !direction;
+}
+		curAngle += 0.00001f;
+		if (curAngle >= 360)
 		{
+			curAngle -= 360;
+		}
 
-			//Gwt+Handle user input event
-
-			glfwPollEvents();
 			
 			//Clear window
 
@@ -190,6 +235,19 @@ int main()
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			glUseProgram(shader);
+
+			glm::mat4 model(1.0f);
+			
+			model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+			model = glm::translate(model, glm::vec3(triOffset, 0.0f, 0.0f));
+			//model = glm::rotate(model, 90 * curAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+			
+			
+
+
+
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
 
 			glBindVertexArray(VAO);
 			
