@@ -23,6 +23,12 @@ float triIncrement = 0.0005f;
 
 float curAngle = 0.0f;
 
+bool sizeDirection = true;
+float curSize = 0.4f;
+float maxSize = 0.8f;
+float minsize = 0.1f;
+
+
 
 
 // Vertex Shader
@@ -228,7 +234,19 @@ int main()
 			curAngle -= 360;
 		}
 
+		if (direction)
+		{
+			curSize += 0.0001f;
+		}
+
+		else {
+			curSize -=0.0001f;
+		}
 			
+		if (curSize >= maxSize || curSize <= minsize)
+		{
+			sizeDirection = !sizeDirection;
+		}
 			//Clear window
 
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -238,10 +256,10 @@ int main()
 
 			glm::mat4 model(1.0f);
 			
-			model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-			model = glm::translate(model, glm::vec3(triOffset, 0.0f, 0.0f));
 			//model = glm::rotate(model, 90 * curAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(triOffset, 0.0f, 0.0f));
 			
+			model = glm::scale(model, glm::vec3(curSize, curSize, 0.1f));
 			
 
 
