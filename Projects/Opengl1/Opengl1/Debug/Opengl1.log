@@ -1,20 +1,2 @@
-﻿  Source.cpp
-Source.obj : error LNK2005: "void __cdecl AddShader(unsigned int,char const *,unsigned int)" (?AddShader@@YAXIPBDI@Z) already defined in main.obj
-Source.obj : error LNK2005: "void __cdecl CompileShaders(void)" (?CompileShaders@@YAXXZ) already defined in main.obj
-Source.obj : error LNK2005: "void __cdecl CreateTriangle(void)" (?CreateTriangle@@YAXXZ) already defined in main.obj
-Source.obj : error LNK2005: _main already defined in main.obj
-Source.obj : error LNK2005: "unsigned int VAO" (?VAO@@3IA) already defined in main.obj
-Source.obj : error LNK2005: "unsigned int VBO" (?VBO@@3IA) already defined in main.obj
-Source.obj : error LNK2005: "unsigned int shader" (?shader@@3IA) already defined in main.obj
-Source.obj : error LNK2005: "unsigned int uniformModel" (?uniformModel@@3IA) already defined in main.obj
-Source.obj : error LNK2005: "bool direction" (?direction@@3_NA) already defined in main.obj
-Source.obj : error LNK2005: "float triOffset" (?triOffset@@3MA) already defined in main.obj
-Source.obj : error LNK2005: "float trimaxoffset" (?trimaxoffset@@3MA) already defined in main.obj
-Source.obj : error LNK2005: "float triIncrement" (?triIncrement@@3MA) already defined in main.obj
-Source.obj : error LNK2005: "float curAngle" (?curAngle@@3MA) already defined in main.obj
-Source.obj : error LNK2005: "bool sizeDirection" (?sizeDirection@@3_NA) already defined in main.obj
-Source.obj : error LNK2005: "float curSize" (?curSize@@3MA) already defined in main.obj
-Source.obj : error LNK2005: "float maxSize" (?maxSize@@3MA) already defined in main.obj
-Source.obj : error LNK2005: "float minsize" (?minsize@@3MA) already defined in main.obj
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-D:\Programming\Opengl\Projects\Opengl1\Debug\Opengl1.exe : fatal error LNK1169: one or more multiply defined symbols found
+﻿LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Opengl1.vcxproj -> D:\Programming\Opengl\Projects\Opengl1\Debug\Opengl1.exe
